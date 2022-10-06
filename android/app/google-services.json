@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "488734581063",
+    "project_id": "spendingmanagement-3cf53",
+    "storage_bucket": "spendingmanagement-3cf53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488734581063:android:bd833b467fdcf2c8976c62",
+        "android_client_info": {
+          "package_name": "com.example.spending_management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "488734581063-gvr9k9bqq60bbskvdq9jtvg4mt2ga9kg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spending_management",
+            "certificate_hash": "24e29e2c7b1bcb58025f8b11b2807a2d9a44cece"
+          }
+        },
+        {
+          "client_id": "488734581063-qacvlif0vumha2oon39s1rj9l09rha12.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcyz-bByMn3WSZ9cTZ7WnC0rT7RT-nA-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488734581063-qacvlif0vumha2oon39s1rj9l09rha12.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
