@@ -5,7 +5,8 @@ import 'package:spending_management/views/inner_screen/profile_screen.dart';
 import 'package:spending_management/views/inner_screen/spending_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  String currentUserId;
+  MainScreen({required this.currentUserId, Key? key}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -33,17 +34,16 @@ class _MainScreenState extends State<MainScreen> {
     ),
   ];
 
-  final _listPage = [
-    const HomeScreen(),
-    const SpendingScreen(),
-    const AnalyticScreen(),
-    const ProfileScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final listPage = [
+      const HomeScreen(),
+      const SpendingScreen(),
+      const AnalyticScreen(),
+      ProfileScreen(currentUserId: widget.currentUserId,),
+    ];
     return Scaffold(
-      body: _listPage[_selectIndex],
+      body: listPage[_selectIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         unselectedItemColor: Colors.black,

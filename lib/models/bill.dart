@@ -2,39 +2,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Bill {
   late String id;
-  late String ownName;
+  late String ownId;
   late String billName;
   late int price;
   late Timestamp date;
-  late List<String> listPeople;
+  late List<dynamic> listPeopleId;
 
   Bill(
     this.id,
-    this.ownName,
+    this.ownId,
     this.billName,
     this.price,
     this.date,
-    this.listPeople,
+    this.listPeopleId,
   );
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'id': id,
-      'ownName': ownName,
+      'ownId': ownId,
       'billName': billName,
       'price': price,
       'date': date,
-      'listPeople': listPeople,
+      'listPeopleId': listPeopleId,
     };
     return map;
   }
 
   Bill.fromMap(Map<String, dynamic> map) {
     id = map['id'] ?? '';
-    ownName = map['ownName'] ?? '';
+    ownId = map['ownId'] ?? '';
     billName = map['billName'] ?? '';
     price = map['price'] ?? 0;
     date = map['date'] ?? Timestamp.fromDate(DateTime.now());
-    listPeople = map['listPeople'] ?? [];
+    listPeopleId = map['listPeopleId'] ?? [];
   }
 }

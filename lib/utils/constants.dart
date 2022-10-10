@@ -2,7 +2,7 @@ import 'package:intl/intl.dart' as intl;
 
 class Constants {
 
-  static String urlImage = 'https://scontent.fsgn5-9.fna.fbcdn.net/v/t39.30808-6/272970922_3073219432940445_3711955370304684567_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=eSrAF8m37VEAX_RjiXP&_nc_ht=scontent.fsgn5-9.fna&oh=00_AT-vp2ysujmUQnQSe3QQrD_-1aBEgqWvHd1XG35PtnqVxw&oe=6340DC36';
+  static String urlImage = 'https://firebasestorage.googleapis.com/v0/b/spendingmanagement-3cf53.appspot.com/o/images%2Favatar%2Fdefault.png?alt=media&token=2fe716f6-534c-4889-a0d3-4c842e4add68';
 
   static List<int> monthKeys = List<int>.generate(12, (index) => index + 1);
 

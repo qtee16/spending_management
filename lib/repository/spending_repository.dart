@@ -4,9 +4,8 @@ import 'package:spending_management/models/bill.dart';
 class SpendingRepository {
   static final SpendingRepository spendingRepository =
       SpendingRepository._getInstance();
-  SpendingRepository._getInstance();
 
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  SpendingRepository._getInstance();
 
   var ref = FirebaseFirestore.instance;
 
@@ -16,6 +15,16 @@ class SpendingRepository {
         .doc(newBill.id)
         .set(newBill.toMap())
         .catchError((error) => print('Failed to add bill: $error'));
+  }
+
+  editBill(Bill bill, String collection) {
+    print(bill.id);
+    ref
+        .collection(collection)
+        .doc(bill.id)
+        .update(bill.toMap())
+        .then((value) => print('Update ${bill.id}'))
+        .catchError((error) => print('Failed to update: $error'));
   }
 
   getAllBills(String collection) {
