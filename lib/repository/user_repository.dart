@@ -3,7 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:spending_management/models/my_user.dart';
 
 class UserRepository {
-  static final UserRepository userRepository = UserRepository._getInstance();
+  static final UserRepository instance = UserRepository._getInstance();
   UserRepository._getInstance();
 
   final storageRef = FirebaseStorage.instance.ref();
@@ -18,6 +18,12 @@ class UserRepository {
     var query = await fireStoreRef.collection('users').doc(userId).get();
     var user = MyUser.fromMap(query.data()!);
     return user;
+  }
+
+  Stream<MyUser> getStreamUserById(String userId)  {
+    return fireStoreRef.collection('users').doc(userId).snapshots().map(
+            (event) => MyUser.fromMap(event.data()!),
+    );
   }
 
   getAllUsers() {

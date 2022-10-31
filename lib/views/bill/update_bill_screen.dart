@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:spending_management/repository/user_repository.dart';
 import 'package:spending_management/repository/spending_repository.dart';
-import 'package:uuid/uuid.dart';
+import 'package:spending_management/repository/user_repository.dart';
 
 import '../../models/bill.dart';
 import '../../models/my_user.dart';
+import '../../repository/data_manager.dart';
 import 'widget/multi_select.dart';
 
-UserRepository _homeRepo = UserRepository.userRepository;
-SpendingRepository _spendRepo = SpendingRepository.spendingRepository;
+DataManager dataManager = DataManager.instance;
+final _userRepo = UserRepository.instance;
+final _spendRepo = SpendingRepository.instance;
 
 class UpdateBillScreen extends StatefulWidget {
 
@@ -49,11 +50,11 @@ class _UpdateBillScreenState extends State<UpdateBillScreen> {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder<List<MyUser>>(
-            future: _homeRepo.getAllUsersList(),
+            future: _userRepo.getAllUsersList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 bool visibleWarningSelectedPeople = false;
-                MyUser selectPerson = snapshot.data!.firstWhere((user) => user.id == widget.bill.ownId);
+                // MyUser selectPerson = snapshot.data!.firstWhere((user) => user.id == widget.bill.ownId);
                 List<MyUser> selectedPeople = [];
                 for (var userId in widget.bill.listPeopleId) {
                   MyUser person = snapshot.data!.firstWhere((user) => user.id == userId);
@@ -83,29 +84,29 @@ class _UpdateBillScreenState extends State<UpdateBillScreen> {
                         key: formKey,
                         child: Column(
                           children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: DropdownButton<MyUser>(
-                                alignment: Alignment.bottomLeft,
-                                isExpanded: true,
-                                value: selectPerson,
-                                onChanged: (MyUser? user) {
-                                  setStateSB(() {
-                                    selectPerson = user!;
-                                  });
-                                },
-                                items: snapshot.data!.map((item) {
-                                  return DropdownMenuItem(
-                                      value: item, child: Text(item.name));
-                                }).toList(),
-                              ),
-                            ),
+                            // Container(
+                            //   width: MediaQuery.of(context).size.width,
+                            //   padding:
+                            //   const EdgeInsets.symmetric(horizontal: 10),
+                            //   decoration: BoxDecoration(
+                            //     border: Border.all(color: Colors.grey),
+                            //     borderRadius: BorderRadius.circular(4),
+                            //   ),
+                            //   child: DropdownButton<MyUser>(
+                            //     alignment: Alignment.bottomLeft,
+                            //     isExpanded: true,
+                            //     value: selectPerson,
+                            //     onChanged: (MyUser? user) {
+                            //       setStateSB(() {
+                            //         selectPerson = user!;
+                            //       });
+                            //     },
+                            //     items: snapshot.data!.map((item) {
+                            //       return DropdownMenuItem(
+                            //           value: item, child: Text(item.name));
+                            //     }).toList(),
+                            //   ),
+                            // ),
                             const SizedBox(
                               height: 10,
                             ),
@@ -194,7 +195,7 @@ class _UpdateBillScreenState extends State<UpdateBillScreen> {
                                     if (formKey.currentState!.validate()) {
                                       if (selectedPeople.isNotEmpty) {
                                         var id = widget.bill.id;
-                                        var ownId = selectPerson.id;
+                                        var ownId = dataManager.userId!;
                                         var billName = titleController.text.trim();
                                         var price = moneyController.text.trim();
                                         var strDate = dateController.text.trim();

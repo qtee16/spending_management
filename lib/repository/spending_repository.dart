@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spending_management/models/bill.dart';
 
 class SpendingRepository {
-  static final SpendingRepository spendingRepository =
+  static final SpendingRepository instance =
       SpendingRepository._getInstance();
 
   SpendingRepository._getInstance();

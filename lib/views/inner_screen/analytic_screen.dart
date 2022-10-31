@@ -1,16 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:spending_management/models/user_bill.dart';
 import 'package:spending_management/repository/analytic_repository.dart';
+import 'package:spending_management/repository/data_manager.dart';
 import 'package:spending_management/utils/constants.dart';
 
-import '../../models/bill.dart';
-import '../../models/my_user.dart';
-import '../../repository/user_repository.dart';
-import '../../repository/spending_repository.dart';
-
-AnalyticRepository _analyticRepo = AnalyticRepository.analyticRepository;
-SpendingRepository _spendRepo = SpendingRepository.spendingRepository;
+DataManager dataManager = DataManager.instance;
+final _analyticRepo = AnalyticRepository.instance;
 
 class AnalyticScreen extends StatefulWidget {
   const AnalyticScreen({Key? key}) : super(key: key);
@@ -110,7 +105,8 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Padding(
+        child: Container(
+          color: Colors.grey.shade200,
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
           child: Column(
             children: [
@@ -208,37 +204,47 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       }
+
                       return Column(
                         children: snapshot.data!.map((userBill) {
+                          var res = userBill.spend - userBill.debt;
                           return Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: Colors.black, width: 1),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              leading: CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(userBill.urlAvatar)),
-                              title: Text(
-                                userBill.name,
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(
-                                '-${Constants.formatter.format(userBill.debt)}',
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 16,
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: Material(
+                              elevation: 4,
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage(Constants.loadingAvt),
+                                    foregroundImage:
+                                        NetworkImage(userBill.urlAvatar)),
+                                title: Text(
+                                  userBill.name,
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                              trailing: Text(
-                                '+${Constants.formatter.format(userBill.spend)}',
-                                style: const TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
+                                subtitle: Text(
+                                  '-${Constants.formatter.format(userBill.debt)}',
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                trailing: Text(
+                                  ((res > 0) ? '+' : '') +
+                                      Constants.formatter.format(res),
+                                  style: (res > 0)
+                                      ? const TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                        )
+                                      : const TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                 ),
                               ),
                             ),

@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spending_management/repository/data_manager.dart';
 import 'package:spending_management/utils/constants.dart';
+import 'package:spending_management/utils/utils.dart';
 
 import '../models/my_user.dart';
 
 class AuthRepository {
-  static final AuthRepository authRepository = AuthRepository._getInstance();
+  static final AuthRepository instance = AuthRepository._getInstance();
 
   AuthRepository._getInstance();
 
@@ -22,7 +23,12 @@ class AuthRepository {
         .then((value) {
       var urlAvatar = Constants.urlImage;
       var newUser = MyUser(
-          id: value.user!.uid, name: name, email: email, urlAvatar: urlAvatar);
+          id: value.user!.uid,
+          name: name,
+          email: email,
+          urlAvatar: urlAvatar,
+          hashPassword: encrypt(password),
+      );
       ref
           .collection('users')
           .doc(value.user!.uid)

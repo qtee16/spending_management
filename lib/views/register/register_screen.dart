@@ -3,8 +3,8 @@ import 'package:spending_management/repository/auth_repository.dart';
 import 'package:spending_management/repository/data_manager.dart';
 import 'package:spending_management/views/main/main_screen.dart';
 
-final AuthRepository _authRepo = AuthRepository.authRepository;
 DataManager dataManager = DataManager.instance;
+final _authRepo = AuthRepository.instance;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -80,16 +80,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Mật khẩu',
-                  ),validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng điền đầy đủ thông tin';
-                  }
-                  return null;
-                },
-
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng điền đầy đủ thông tin';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(
-                  height: 32,
+                  height: 20,
                 ),
                 TextFormField(
                   controller: cfPassController,
@@ -118,9 +118,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       String name = nameController.text.trim();
                       String email = emailController.text.trim();
                       String password = passwordController.text.trim();
-                      await _authRepo.registerWithEmailAndPassword(name, email, password);
+                      await _authRepo.registerWithEmailAndPassword(
+                          name, email, password);
                       var currentUserId = await dataManager.getCurrentUserId();
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen(currentUserId: currentUserId,)));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => MainScreen(
+                                currentUserId: currentUserId,
+                              )));
                     }
                   },
                   child: const Text('Đăng ký'),

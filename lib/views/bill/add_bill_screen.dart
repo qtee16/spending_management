@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:spending_management/repository/user_repository.dart';
+import 'package:spending_management/repository/data_manager.dart';
 import 'package:spending_management/repository/spending_repository.dart';
+import 'package:spending_management/repository/user_repository.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/bill.dart';
 import '../../models/my_user.dart';
 import 'widget/multi_select.dart';
 
-UserRepository _homeRepo = UserRepository.userRepository;
-SpendingRepository _spendRepo = SpendingRepository.spendingRepository;
+DataManager dataManager = DataManager.instance;
+final _userRepo = UserRepository.instance;
+final _spendRepo = SpendingRepository.instance;
 
 class AddBillScreen extends StatefulWidget {
   const AddBillScreen({Key? key}) : super(key: key);
@@ -37,10 +39,10 @@ class _AddBillScreenState extends State<AddBillScreen> {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder<List<MyUser>>(
-            future: _homeRepo.getAllUsersList(),
+            future: _userRepo.getAllUsersList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                MyUser selectPerson = snapshot.data![0];
+                // MyUser selectPerson = snapshot.data![0];
                 List<MyUser> selectedPeople = [];
                 bool visibleWarningSelectedPeople = false;
                 return StatefulBuilder(
@@ -67,29 +69,29 @@ class _AddBillScreenState extends State<AddBillScreen> {
                         key: formKey,
                         child: Column(
                           children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: DropdownButton<MyUser>(
-                                alignment: Alignment.bottomLeft,
-                                isExpanded: true,
-                                value: selectPerson,
-                                onChanged: (MyUser? user) {
-                                  setStateSB(() {
-                                    selectPerson = user!;
-                                  });
-                                },
-                                items: snapshot.data!.map((item) {
-                                  return DropdownMenuItem(
-                                      value: item, child: Text(item.name));
-                                }).toList(),
-                              ),
-                            ),
+                            // Container(
+                            //   width: MediaQuery.of(context).size.width,
+                            //   padding:
+                            //   const EdgeInsets.symmetric(horizontal: 10),
+                            //   decoration: BoxDecoration(
+                            //     border: Border.all(color: Colors.grey),
+                            //     borderRadius: BorderRadius.circular(4),
+                            //   ),
+                            //   child: DropdownButton<MyUser>(
+                            //     alignment: Alignment.bottomLeft,
+                            //     isExpanded: true,
+                            //     value: selectPerson,
+                            //     onChanged: (MyUser? user) {
+                            //       setStateSB(() {
+                            //         selectPerson = user!;
+                            //       });
+                            //     },
+                            //     items: snapshot.data!.map((item) {
+                            //       return DropdownMenuItem(
+                            //           value: item, child: Text(item.name));
+                            //     }).toList(),
+                            //   ),
+                            // ),
                             const SizedBox(
                               height: 10,
                             ),
@@ -110,6 +112,7 @@ class _AddBillScreenState extends State<AddBillScreen> {
                               height: 10,
                             ),
                             TextFormField(
+                              keyboardType: TextInputType.number,
                               controller: moneyController,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
@@ -180,7 +183,7 @@ class _AddBillScreenState extends State<AddBillScreen> {
                                       if (selectedPeople.isNotEmpty) {
                                         var uuid = const Uuid();
                                         var id = uuid.v4();
-                                        var ownId = selectPerson.id;
+                                        var ownId = dataManager.userId!;
                                         var billName = titleController.text.trim();
                                         var price = moneyController.text.trim();
                                         var strDate = dateController.text.trim();
@@ -244,7 +247,7 @@ Future<void> selectDate(BuildContext context, Function setDate) async {
   final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(2015, 8),
+      firstDate: DateTime(1900, 1),
       lastDate: DateTime(2101));
   if (picked != null && picked != selectedDate) {
     Timestamp myTimeStamp = Timestamp.fromDate(picked);

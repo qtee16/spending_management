@@ -5,7 +5,7 @@ import 'package:spending_management/models/user_bill.dart';
 import '../models/bill.dart';
 
 class AnalyticRepository {
-  static final AnalyticRepository analyticRepository = AnalyticRepository._getInstance();
+  static final AnalyticRepository instance = AnalyticRepository._getInstance();
   AnalyticRepository._getInstance();
 
   FirebaseFirestore ref = FirebaseFirestore.instance;

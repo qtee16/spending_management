@@ -42,10 +42,19 @@ dependencies:
   firebase_storage: ^10.3.10
   shared_preferences: ^2.0.15
   image_picker: ^0.8.6
+  encrypt: ^5.0.1
+  fluttertoast: ^8.1.1
+  url_launcher: ^6.1.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.10.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

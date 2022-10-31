@@ -1,5 +1,12 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spending_management/repository/analytic_repository.dart';
+import 'package:spending_management/repository/auth_repository.dart';
+import 'package:spending_management/repository/general_repository.dart';
+import 'package:spending_management/repository/profile_repository.dart';
+import 'package:spending_management/repository/spending_repository.dart';
+import 'package:spending_management/repository/user_repository.dart';
 
 class DataManager {
   static DataManager instance = DataManager._getInstance();

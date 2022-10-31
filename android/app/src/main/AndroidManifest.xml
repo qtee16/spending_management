@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.spending_management">
    <application
-        android:label="spending_management"
+        android:label="Phòng 205"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -7,11 +7,14 @@ import 'package:spending_management/repository/user_repository.dart';
 import 'package:spending_management/utils/constants.dart';
 import 'package:spending_management/views/login/login_screen.dart';
 
-AuthRepository _authRepo = AuthRepository.authRepository;
 DataManager dataManager = DataManager.instance;
+final _authRepo = AuthRepository.instance;
+final _profileRepo = ProfileRepository.instance;
+final _userRepo = UserRepository.instance;
 
 class ProfileScreen extends StatefulWidget {
   String currentUserId;
+
   ProfileScreen({required this.currentUserId, Key? key}) : super(key: key);
 
   @override
@@ -19,10 +22,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final maxSize = MediaQuery.of(context).size;
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -35,8 +39,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: FutureBuilder<MyUser>(
-          future: UserRepository.userRepository.getUserById(widget.currentUserId),
+        child: StreamBuilder<MyUser>(
+          stream: _userRepo
+              .getStreamUserById(widget.currentUserId),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const Text('#');
@@ -56,13 +61,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           GestureDetector(
                             onLongPress: () async {
-                              await ProfileRepository.profileRepo.getFromGallery();
+                              await _profileRepo
+                                  .getFromGallery();
+                              print(snapshot.data!.urlAvatar);
                             },
                             child: Container(
                               height: 0.3 * maxSize.width,
                               width: 0.3 * maxSize.width,
                               child: CircleAvatar(
-                                  backgroundImage: NetworkImage(snapshot.data!.urlAvatar)),
+                                backgroundImage:
+                                    AssetImage(Constants.loadingAvt),
+                                foregroundImage:
+                                    NetworkImage(snapshot.data!.urlAvatar),
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -149,9 +160,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         title: const Text('Họ tên'),
                         subtitle: Text(snapshot.data!.name),
-                        trailing: Image.asset(
-                          'assets/images/pencil.png',
-                          width: 20,
+                        trailing: GestureDetector(
+                          onTap: () {
+                            _profileRepo.showEditDialog(
+                              context: context,
+                              type: AppKeys.name,
+                              text: snapshot.data!.name,
+                              updateDb:
+                              _profileRepo.updateName,
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/images/pencil.png',
+                            width: 20,
+                          ),
                         ),
                       ),
                       const Divider(
@@ -166,10 +188,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         title: const Text('Email'),
                         subtitle: Text(snapshot.data!.email),
-                        trailing: Image.asset(
-                          'assets/images/pencil.png',
-                          width: 20,
-                        ),
                       ),
                       const Divider(
                         color: Colors.white,
@@ -183,9 +201,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         title: const Text('Điện thoại'),
                         subtitle: Text(snapshot.data!.phone),
-                        trailing: Image.asset(
-                          'assets/images/pencil.png',
-                          width: 20,
+                        trailing: GestureDetector(
+                          onTap: () {
+                            _profileRepo.showEditDialog(
+                              context: context,
+                              type: AppKeys.phone,
+                              text: snapshot.data!.phone,
+                              updateDb:
+                                  _profileRepo.updatePhone,
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/images/pencil.png',
+                            width: 20,
+                          ),
                         ),
                       ),
                       const Divider(
@@ -200,9 +229,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         title: const Text('Ngày sinh'),
                         subtitle: Text(snapshot.data!.birthday),
-                        trailing: Image.asset(
-                          'assets/images/pencil.png',
-                          width: 20,
+                        trailing: GestureDetector(
+                          onTap: () {
+                            _profileRepo.showEditDialog(
+                              context: context,
+                              type: AppKeys.birthday,
+                              text: snapshot.data!.birthday,
+                              updateDb:
+                                  _profileRepo.updateBirthday,
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/images/pencil.png',
+                            width: 20,
+                          ),
                         ),
                       ),
                       const Divider(
@@ -217,9 +257,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         title: const Text('Đổi mật khẩu'),
                         subtitle: const Text('********'),
-                        trailing: Image.asset(
-                          'assets/images/pencil.png',
-                          width: 20,
+                        trailing: GestureDetector(
+                          onTap: () {
+                            _profileRepo.showEditDialog(
+                              context: context,
+                              type: AppKeys.password,
+                              text: "",
+                              updateDb:
+                                  _profileRepo.updatePassword,
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/images/pencil.png',
+                            width: 20,
+                          ),
                         ),
                       ),
                       const Divider(
@@ -241,7 +292,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: ElevatedButton(
                       onPressed: () async {
                         await _authRepo.signOut();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors.redAccent,

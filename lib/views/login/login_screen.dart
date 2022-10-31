@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:spending_management/repository/auth_repository.dart';
 import 'package:spending_management/repository/data_manager.dart';
-import 'package:spending_management/views/register/register_screen.dart';
+import 'package:spending_management/utils/utils.dart';
 
 import '../main/main_screen.dart';
 
 DataManager dataManager = DataManager.instance;
+final _authRepo = AuthRepository.instance;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -79,9 +80,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (_formKey.currentState!.validate()) {
                       var email = emailController.text.trim();
                       var password = passwordController.text.trim();
-                      await AuthRepository.authRepository.loginWithEmailAndPassword(email, password);
+                      await _authRepo.loginWithEmailAndPassword(email, password);
                       var currentUserId = await dataManager.getCurrentUserId();
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen(currentUserId: currentUserId,)));
+                      if (currentUserId != null) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen(currentUserId: currentUserId,)));
+                      } else {
+                        showToastError('Tài khoản không tồn tại');
+                      }
+
                     }
                   },
                   child: const Text('Đăng nhập'),
@@ -89,14 +95,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
-                    },
-                    child: const Text(
-                      'Đăng ký',
-                      style: TextStyle(decoration: TextDecoration.underline),
-                    ))
+                // TextButton(
+                //     onPressed: () {
+                //       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
+                //     },
+                //     child: const Text(
+                //       'Đăng ký',
+                //       style: TextStyle(decoration: TextDecoration.underline),
+                //     ))
               ],
             ),
           ),

@@ -6,6 +6,11 @@ import 'package:spending_management/models/my_user.dart';
 import 'package:spending_management/repository/user_repository.dart';
 import 'package:spending_management/utils/constants.dart';
 
+import '../../repository/data_manager.dart';
+
+DataManager dataManager = DataManager.instance;
+final _userRepo = UserRepository.instance;
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -44,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             StreamBuilder<QuerySnapshot>(
-              stream: UserRepository.userRepository.getAllUsers(),
+              stream: _userRepo.getAllUsers(),
               builder: (context, snapshots) {
                 if (snapshots.hasError) {
                   return const Center(child: Text('Something went wrong'));
@@ -79,13 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   height: avtWidth * 0.7,
                                   width: avtWidth * 0.7,
                                   decoration: BoxDecoration(
-                                    color: Colors.blue,
                                     borderRadius:
                                         BorderRadius.circular(avtWidth / 2),
                                   ),
                                   child: CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(listUser[index].urlAvatar),
+                                    foregroundImage: NetworkImage(listUser[index].urlAvatar),
+                                    backgroundImage: AssetImage(Constants.loadingAvt),
                                   ),
                                   // child: FutureBuilder<String>(
                                   //   future: HomeRepository.homeRepository

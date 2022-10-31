@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:spending_management/repository/data_manager.dart';
 import 'package:spending_management/repository/user_repository.dart';
 import 'package:spending_management/repository/spending_repository.dart';
 import 'package:spending_management/utils/constants.dart';
+import 'package:spending_management/utils/utils.dart';
 import 'package:spending_management/views/bill/add_bill_screen.dart';
 import 'package:spending_management/views/bill/update_bill_screen.dart';
 import 'package:uuid/uuid.dart';
@@ -11,8 +13,9 @@ import 'package:uuid/uuid.dart';
 import '../../models/bill.dart';
 import '../../models/my_user.dart';
 
-SpendingRepository _spendRepo = SpendingRepository.spendingRepository;
-UserRepository _homeRepo = UserRepository.userRepository;
+DataManager dataManager = DataManager.instance;
+final _userRepo = UserRepository.instance;
+final _spendRepo = SpendingRepository.instance;
 
 class SpendingScreen extends StatefulWidget {
   const SpendingScreen({Key? key}) : super(key: key);
@@ -146,7 +149,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 10),
                             child: StreamBuilder<QuerySnapshot>(
-                              stream: _homeRepo.getAllUsers(),
+                              stream: _userRepo.getAllUsers(),
                               builder: (context, snapshot) {
                                 String avatar;
                                 if (snapshot.hasData) {
@@ -246,93 +249,97 @@ class SpendingItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: maxSize.width * 0.04),
-        height: maxSize.width * 0.25,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CircleAvatar(
-              radius: maxSize.width * 0.06,
-              backgroundImage: NetworkImage(avatar),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: maxSize.width * 0.1,
-                  width: maxSize.width * 0.6,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: maxSize.width * 0.4,
-                        child: Text(
-                          title,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 20),
+    return Material(
+      elevation: 10,
+      child: Column(children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: maxSize.width * 0.04),
+          height: maxSize.width * 0.25,
+          // decoration: BoxDecoration(
+          //   border: Border.all(color: Colors.blue),
+          //   borderRadius: BorderRadius.circular(10),
+          // ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CircleAvatar(
+                radius: maxSize.width * 0.06,
+                foregroundImage: NetworkImage(avatar),
+                backgroundImage: AssetImage(Constants.loadingAvt),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: maxSize.width * 0.1,
+                    width: maxSize.width * 0.6,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: maxSize.width * 0.4,
+                          child: Text(
+                            title,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 20),
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: maxSize.width * 0.2,
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          date,
-                          style: const TextStyle(fontStyle: FontStyle.italic),
+                        Container(
+                          width: maxSize.width * 0.2,
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            date,
+                            style: const TextStyle(fontStyle: FontStyle.italic),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: maxSize.width * 0.1,
-                  width: maxSize.width * 0.6,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: maxSize.width * 0.5,
-                        child: Text(
-                          Constants.formatter.format(money),
-                          style: const TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
+                  SizedBox(
+                    height: maxSize.width * 0.1,
+                    width: maxSize.width * 0.6,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: maxSize.width * 0.5,
+                          child: Text(
+                            Constants.formatter.format(money),
+                            style: const TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        width: maxSize.width * 0.1,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            maxSize.width * 0.05,
+                        Container(
+                          alignment: Alignment.center,
+                          width: maxSize.width * 0.1,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              maxSize.width * 0.05,
+                            ),
+                            color: Colors.blue,
                           ),
-                          color: Colors.blue,
-                        ),
-                        child: Text(
-                          listPeople.length.toString(),
-                          style: const TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                          child: Text(
+                            listPeople.length.toString(),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      )
-    ]);
+                ],
+              ),
+            ],
+          ),
+        )
+      ]),
+    );
   }
 }
 
@@ -365,7 +372,12 @@ showOptionBottom(BuildContext context, Bill bill) {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateBillScreen(bill: bill)));
+                if (DataManager.instance.userId == bill.ownId) {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateBillScreen(bill: bill)));
+                } else {
+                  showToastError('Muốn sửa á? Sửa thế đ nào được!');
+                }
+
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -397,7 +409,12 @@ showOptionBottom(BuildContext context, Bill bill) {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                showDeleteDialog(context, bill.id, collection);
+                if (DataManager.instance.userId == bill.ownId) {
+                  showDeleteDialog(context, bill.id, collection);
+                } else {
+                  showToastError('Muốn xóa á? Xóa thế đ nào được!');
+                }
+
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -442,7 +459,7 @@ showAddDialog(BuildContext context, int month, int year) {
     barrierDismissible: false,
     builder: (context) {
       return FutureBuilder<List<MyUser>>(
-          future: _homeRepo.getAllUsersList(),
+          future: _userRepo.getAllUsersList(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               MyUser selectPerson = snapshot.data![0];
@@ -840,7 +857,7 @@ showEditDialog(BuildContext context, Bill bill, String collection) {
       dateController.text = '${date.day}/${date.month}/${date.year}';
 
       return FutureBuilder<List<MyUser>>(
-          future: _homeRepo.getAllUsersList(),
+          future: _userRepo.getAllUsersList(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               MyUser selectPerson = snapshot.data!.firstWhere((user) => user.id == bill.ownId);
