@@ -220,6 +220,7 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                                         NetworkImage(userBill.urlAvatar)),
                                 title: Text(
                                   userBill.name,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
@@ -237,12 +238,12 @@ class _AnalyticScreenState extends State<AnalyticScreen> {
                                   style: (res > 0)
                                       ? const TextStyle(
                                           color: Colors.green,
-                                          fontSize: 28,
+                                          fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                         )
                                       : const TextStyle(
                                           color: Colors.red,
-                                          fontSize: 28,
+                                          fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                         ),
                                 ),

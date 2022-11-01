@@ -94,17 +94,40 @@ class ProfileRepository {
     });
   }
 
-  updatePassword(String password) async {
+  updatePassword(BuildContext context, String password) async {
     //Create an instance of the current user.
     final user = FirebaseAuth.instance.currentUser!;
 
     //Pass in the password to updatePassword.
-    user.updatePassword(password).then((_) {
-      print("Successfully changed password");
-    }).catchError((error) {
-      print("Password can't be changed" + error.toString());
-      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
-    });
+    try {
+      await user.updatePassword(password);
+      firestore.collection('users').doc(dataManager.userId).update({
+        "hashPassword": encrypt(password),
+      });
+      showToastSuccess('Đổi mật khẩu thành công');
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        showToastError('Vui lòng đăng nhập lại để thay đổi mật khẩu');
+      }
+      print('Failed with error code: ${e.code}');
+      print(e.message);
+    } catch (e) {
+      print('Error: ' + e.toString());
+    }
+    // user.updatePassword(password).then((_) {
+    //   print("Successfully changed password");
+    //   firestore.collection('users').doc(dataManager.userId).update({
+    //     "hashPassword": encrypt(password),
+    //   });
+    //   showToastSuccess('Đổi mật khẩu thành công');
+    //   Navigator.pop(context);
+    // })
+    //     .catchError((error) {
+    //   print("Password can't be changed" + error.toString());
+    //
+    //   //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+    // });
   }
 
   checkCorrectPassword(String password) async {
@@ -259,9 +282,7 @@ class ProfileRepository {
                         if (type == AppKeys.password) {
                           final isCorrectPass = await checkCorrectPassword(formController.text);
                           if (isCorrectPass) {
-                            await updateDb(passController.text);
-                            showToastSuccess('Đổi mật khẩu thành công');
-                            Navigator.pop(context);
+                            await updateDb(context, passController.text);
                           } else {
                             showToastError('Mật khẩu không chính xác');
                           }

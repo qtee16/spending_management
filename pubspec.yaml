@@ -45,6 +45,7 @@ dependencies:
   encrypt: ^5.0.1
   fluttertoast: ^8.1.1
   url_launcher: ^6.1.6
+  firebase_messaging: ^13.1.0
 
 dev_dependencies:
   flutter_test:

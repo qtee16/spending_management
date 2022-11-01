@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../models/bill.dart';
 import '../../models/my_user.dart';
+import '../bill/widget/multi_select.dart';
 
 DataManager dataManager = DataManager.instance;
 final _userRepo = UserRepository.instance;
@@ -277,7 +278,7 @@ class SpendingItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          width: maxSize.width * 0.4,
+                          width: maxSize.width * 0.35,
                           child: Text(
                             title,
                             overflow: TextOverflow.ellipsis,
@@ -285,7 +286,7 @@ class SpendingItem extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          width: maxSize.width * 0.2,
+                          width: maxSize.width * 0.25,
                           alignment: Alignment.centerRight,
                           child: Text(
                             date,
@@ -362,13 +363,45 @@ showOptionBottom(BuildContext context, Bill bill) {
     context: context,
     builder: (context) {
       final width = MediaQuery.of(context).size.width;
-      final height = MediaQuery.of(context).size.height * 0.2;
+      final height = MediaQuery.of(context).size.height * 0.3;
       DateTime date = bill.date.toDate();
       String collection = '${date.month}_${date.year}';
       return Container(
         height: height,
         child: Column(
           children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                showInfoDialog(context, bill);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                alignment: Alignment.center,
+                height: height/3,
+                width: width,
+                decoration: const BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.grey)),
+                ),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/info.png',
+                      width: 0.4/3 * height,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    const Text(
+                      'Thông tin chi tiết',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
@@ -382,7 +415,7 @@ showOptionBottom(BuildContext context, Bill bill) {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 alignment: Alignment.center,
-                height: 0.5 * height,
+                height: height/3,
                 width: width,
                 decoration: const BoxDecoration(
                   border: Border(top: BorderSide(color: Colors.grey)),
@@ -391,7 +424,7 @@ showOptionBottom(BuildContext context, Bill bill) {
                   children: [
                     Image.asset(
                       'assets/images/pencil.png',
-                      width: 0.2 * height,
+                      width: 0.4/3 * height,
                     ),
                     const SizedBox(
                       width: 20,
@@ -419,7 +452,7 @@ showOptionBottom(BuildContext context, Bill bill) {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 alignment: Alignment.center,
-                height: 0.5 * height,
+                height: height/3,
                 width: width,
                 decoration: const BoxDecoration(
                   border: Border(top: BorderSide(color: Colors.grey)),
@@ -428,7 +461,7 @@ showOptionBottom(BuildContext context, Bill bill) {
                   children: [
                     Image.asset(
                       'assets/images/delete.png',
-                      width: 0.2 * height,
+                      width: 0.4/3 * height,
                     ),
                     const SizedBox(
                       width: 20,
@@ -517,28 +550,6 @@ showAddDialog(BuildContext context, int month, int year) {
                                   }).toList(),
                                 ),
                               ),
-                              // child: FutureBuilder<List<MyUser>>(
-                              //   future: HomeRepository.homeRepository.getAllUsersList(),
-                              //   builder: (context, snapshot) {
-                              //     if (snapshot.hasData) {
-                              //       return DropdownButton<MyUser>(
-                              //         alignment: Alignment.bottomLeft,
-                              //         isExpanded: true,
-                              //         value: selectPerson,
-                              //         onChanged: (MyUser? user) {
-                              //           setStateSB(() {
-                              //             selectPerson = user!;
-                              //           });
-                              //         },
-                              //         items: snapshot.data!.map((item) {
-                              //           return DropdownMenuItem(
-                              //               value: item, child: Text(item.name));
-                              //         }).toList(),
-                              //       );
-                              //     }
-                              //     return Container();
-                              //   },
-                              // ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -671,174 +682,88 @@ showAddDialog(BuildContext context, int month, int year) {
               ),
             );
           });
-      // return StatefulBuilder(
-      //   builder: ((context, setStateSB) {
-      //     void _showMultiSelect() async {
-      //       final List<MyUser>? results = await showDialog(
-      //         context: context,
-      //         builder: (BuildContext context) {
-      //           return FutureBuilder<List<MyUser>>(
-      //               future: _homeRepo.getAllUsersList(),
-      //               builder: (context, snapshot) {
-      //             if (snapshot.hasData) {
-      //               return MultiSelect(items: snapshot.data!);
-      //             }
-      //             return Container();
-      //           });
-      //         },
-      //       );
-      //
-      //       // Update UI
-      //       if (results != null) {
-      //         setStateSB(() {
-      //           selectedPeople = results;
-      //         });
-      //       }
-      //     }
-      //
-      //     return AlertDialog(
-      //       scrollable: true,
-      //       title: const Center(child: Text('Thêm chi tiêu mới')),
-      //       content: SizedBox(
-      //         width: MediaQuery.of(context).size.width,
-      //         child: Padding(
-      //           padding: const EdgeInsets.all(8.0),
-      //           child: Form(
-      //             child: Column(
-      //               children: [
-      //                 Container(
-      //                   width: MediaQuery.of(context).size.width,
-      //                   padding: const EdgeInsets.symmetric(horizontal: 10),
-      //                   decoration: BoxDecoration(
-      //                     border: Border.all(color: Colors.grey),
-      //                     borderRadius: BorderRadius.circular(4),
-      //                   ),
-      //                   child: FutureBuilder<List<MyUser>>(
-      //                     future: HomeRepository.homeRepository.getAllUsersList(),
-      //                     builder: (context, snapshot) {
-      //                       if (snapshot.hasData) {
-      //                         setStateSB(() {
-      //                           selectPerson = snapshot.data![0];
-      //                         });
-      //
-      //                         return DropdownButton<MyUser>(
-      //                           alignment: Alignment.bottomLeft,
-      //                           isExpanded: true,
-      //                           value: selectPerson,
-      //                           onChanged: (MyUser? user) {
-      //                             setStateSB(() {
-      //                               selectPerson = user!;
-      //                             });
-      //                           },
-      //                           items: snapshot.data!.map((item) {
-      //                             return DropdownMenuItem(
-      //                                 value: item, child: Text(item.name));
-      //                           }).toList(),
-      //                         );
-      //                       }
-      //                       return Container();
-      //                     },
-      //                   ),
-      //                 ),
-      //                 const SizedBox(
-      //                   height: 10,
-      //                 ),
-      //                 TextFormField(
-      //                   controller: titleController,
-      //                   decoration: const InputDecoration(
-      //                     border: OutlineInputBorder(),
-      //                     labelText: 'Tên khoản chi',
-      //                   ),
-      //                 ),
-      //                 const SizedBox(
-      //                   height: 10,
-      //                 ),
-      //                 TextFormField(
-      //                   controller: moneyController,
-      //                   decoration: const InputDecoration(
-      //                     border: OutlineInputBorder(),
-      //                     labelText: 'Số tiền',
-      //                   ),
-      //                 ),
-      //                 const SizedBox(
-      //                   height: 10,
-      //                 ),
-      //                 TextFormField(
-      //                   controller: dateController,
-      //                   decoration: InputDecoration(
-      //                       border: const OutlineInputBorder(),
-      //                       labelText: 'Ngày chi',
-      //                       suffixIcon: GestureDetector(
-      //                           onTap: (() => selectDate(context, (date) {
-      //                                 DateTime dateTime = date.toDate();
-      //                                 String strDate =
-      //                                     '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-      //                                 dateController.text = strDate;
-      //                                 // setStateSB(() {
-      //                                 //   dateBill = date;
-      //                                 // });
-      //                               })),
-      //                           child:
-      //                               const Icon(Icons.calendar_month_outlined))),
-      //                 ),
-      //                 ElevatedButton(
-      //                   onPressed: _showMultiSelect,
-      //                   child: const Text('Select People'),
-      //                 ),
-      //                 const Divider(
-      //                   height: 30,
-      //                 ),
-      //                 // display selected items
-      //                 Wrap(
-      //                   children: selectedPeople
-      //                       .map((e) => Chip(
-      //                             label: Text(e.name),
-      //                           ))
-      //                       .toList(),
-      //                 )
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //       actions: [
-      //         ElevatedButton(
-      //           style: ElevatedButton.styleFrom(
-      //             primary: Colors.green,
-      //           ),
-      //           child: const Text("Xác nhận"),
-      //           onPressed: () {
-      //             var uuid = const Uuid();
-      //             var id = uuid.v4();
-      //             var ownId = selectPerson.id;
-      //             var billName = titleController.text.trim();
-      //             var price = moneyController.text.trim();
-      //             var strDate = dateController.text.trim();
-      //             var listPeopleId = selectedPeople.map((e) => e.id).toList();
-      //
-      //             DateTime dateTime = DateFormat("dd/MM/yyyy").parse(strDate);
-      //             Timestamp date = Timestamp.fromDate(dateTime);
-      //
-      //             var bill = Bill(id, ownId, billName, int.parse(price), date,
-      //                 listPeopleId);
-      //             var collection = '${month}_$year';
-      //             _spendRepo.addNewBill(bill, collection);
-      //             Navigator.pop(context);
-      //           },
-      //         ),
-      //         ElevatedButton(
-      //           style: ElevatedButton.styleFrom(
-      //             primary: Colors.red,
-      //           ),
-      //           child: const Text("Huỷ"),
-      //           onPressed: () {
-      //             Navigator.pop(context);
-      //           },
-      //         ),
-      //       ],
-      //     );
-      //   }),
-      // );
+    },
+  );
+}
+
+showInfoDialog(BuildContext context, Bill bill,) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return FutureBuilder<List<MyUser>>(
+          future: _userRepo.getAllUsersList(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              MyUser selectPerson = snapshot.data!.firstWhere((user) => user.id == bill.ownId);
+              List<MyUser> selectedPeople = [];
+              for (var userId in bill.listPeopleId) {
+                MyUser person = snapshot.data!.firstWhere((user) => user.id == userId);
+                selectedPeople.add(person);
+              }
+              DateTime dateTime = bill.date.toDate();
+              String strDate =
+                  '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+              return AlertDialog(
+                scrollable: true,
+                title: const Center(child: Text('Thông tin chi tiết', style: TextStyle(fontSize: 24),)),
+                content: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        rowInfo('Người chi: ', selectPerson.name),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        rowInfo('Tên khoản chi: ', bill.billName),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        rowInfo('Số tiền: ', Constants.formatter.format(bill.price)),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        rowInfo('Ngày chi: ', strDate),
+                        const Divider(
+                          height: 20,
+                        ),
+                        // display selected items
+                        Wrap(
+                          children: selectedPeople
+                              .map((e) => Chip(
+                            label: Text(e.name),
+                          ))
+                              .toList(),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                    ),
+                    child: const Text("Thoát"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+            }
+            return AlertDialog(
+              content: Row(
+                children: [
+                  const CircularProgressIndicator(),
+                  Container(
+                      margin: EdgeInsets.only(left: 20),
+                      child: Text("Loading...")),
+                ],
+              ),
+            );
+          });
     },
   );
 }
@@ -919,28 +844,6 @@ showEditDialog(BuildContext context, Bill bill, String collection) {
                                   }).toList(),
                                 ),
                               ),
-                              // child: FutureBuilder<List<MyUser>>(
-                              //   future: HomeRepository.homeRepository.getAllUsersList(),
-                              //   builder: (context, snapshot) {
-                              //     if (snapshot.hasData) {
-                              //       return DropdownButton<MyUser>(
-                              //         alignment: Alignment.bottomLeft,
-                              //         isExpanded: true,
-                              //         value: selectPerson,
-                              //         onChanged: (MyUser? user) {
-                              //           setStateSB(() {
-                              //             selectPerson = user!;
-                              //           });
-                              //         },
-                              //         items: snapshot.data!.map((item) {
-                              //           return DropdownMenuItem(
-                              //               value: item, child: Text(item.name));
-                              //         }).toList(),
-                              //       );
-                              //     }
-                              //     return Container();
-                              //   },
-                              // ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -1072,271 +975,9 @@ showEditDialog(BuildContext context, Bill bill, String collection) {
               ),
             );
           });
-      // return StatefulBuilder(
-      //   builder: ((context, setStateSB) {
-      //     void _showMultiSelect() async {
-      //       final List<MyUser>? results = await showDialog(
-      //         context: context,
-      //         builder: (BuildContext context) {
-      //           return FutureBuilder<List<MyUser>>(
-      //               future: _homeRepo.getAllUsersList(),
-      //               builder: (context, snapshot) {
-      //             if (snapshot.hasData) {
-      //               return MultiSelect(items: snapshot.data!);
-      //             }
-      //             return Container();
-      //           });
-      //         },
-      //       );
-      //
-      //       // Update UI
-      //       if (results != null) {
-      //         setStateSB(() {
-      //           selectedPeople = results;
-      //         });
-      //       }
-      //     }
-      //
-      //     return AlertDialog(
-      //       scrollable: true,
-      //       title: const Center(child: Text('Thêm chi tiêu mới')),
-      //       content: SizedBox(
-      //         width: MediaQuery.of(context).size.width,
-      //         child: Padding(
-      //           padding: const EdgeInsets.all(8.0),
-      //           child: Form(
-      //             child: Column(
-      //               children: [
-      //                 Container(
-      //                   width: MediaQuery.of(context).size.width,
-      //                   padding: const EdgeInsets.symmetric(horizontal: 10),
-      //                   decoration: BoxDecoration(
-      //                     border: Border.all(color: Colors.grey),
-      //                     borderRadius: BorderRadius.circular(4),
-      //                   ),
-      //                   child: FutureBuilder<List<MyUser>>(
-      //                     future: HomeRepository.homeRepository.getAllUsersList(),
-      //                     builder: (context, snapshot) {
-      //                       if (snapshot.hasData) {
-      //                         setStateSB(() {
-      //                           selectPerson = snapshot.data![0];
-      //                         });
-      //
-      //                         return DropdownButton<MyUser>(
-      //                           alignment: Alignment.bottomLeft,
-      //                           isExpanded: true,
-      //                           value: selectPerson,
-      //                           onChanged: (MyUser? user) {
-      //                             setStateSB(() {
-      //                               selectPerson = user!;
-      //                             });
-      //                           },
-      //                           items: snapshot.data!.map((item) {
-      //                             return DropdownMenuItem(
-      //                                 value: item, child: Text(item.name));
-      //                           }).toList(),
-      //                         );
-      //                       }
-      //                       return Container();
-      //                     },
-      //                   ),
-      //                 ),
-      //                 const SizedBox(
-      //                   height: 10,
-      //                 ),
-      //                 TextFormField(
-      //                   controller: titleController,
-      //                   decoration: const InputDecoration(
-      //                     border: OutlineInputBorder(),
-      //                     labelText: 'Tên khoản chi',
-      //                   ),
-      //                 ),
-      //                 const SizedBox(
-      //                   height: 10,
-      //                 ),
-      //                 TextFormField(
-      //                   controller: moneyController,
-      //                   decoration: const InputDecoration(
-      //                     border: OutlineInputBorder(),
-      //                     labelText: 'Số tiền',
-      //                   ),
-      //                 ),
-      //                 const SizedBox(
-      //                   height: 10,
-      //                 ),
-      //                 TextFormField(
-      //                   controller: dateController,
-      //                   decoration: InputDecoration(
-      //                       border: const OutlineInputBorder(),
-      //                       labelText: 'Ngày chi',
-      //                       suffixIcon: GestureDetector(
-      //                           onTap: (() => selectDate(context, (date) {
-      //                                 DateTime dateTime = date.toDate();
-      //                                 String strDate =
-      //                                     '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-      //                                 dateController.text = strDate;
-      //                                 // setStateSB(() {
-      //                                 //   dateBill = date;
-      //                                 // });
-      //                               })),
-      //                           child:
-      //                               const Icon(Icons.calendar_month_outlined))),
-      //                 ),
-      //                 ElevatedButton(
-      //                   onPressed: _showMultiSelect,
-      //                   child: const Text('Select People'),
-      //                 ),
-      //                 const Divider(
-      //                   height: 30,
-      //                 ),
-      //                 // display selected items
-      //                 Wrap(
-      //                   children: selectedPeople
-      //                       .map((e) => Chip(
-      //                             label: Text(e.name),
-      //                           ))
-      //                       .toList(),
-      //                 )
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //       actions: [
-      //         ElevatedButton(
-      //           style: ElevatedButton.styleFrom(
-      //             primary: Colors.green,
-      //           ),
-      //           child: const Text("Xác nhận"),
-      //           onPressed: () {
-      //             var uuid = const Uuid();
-      //             var id = uuid.v4();
-      //             var ownId = selectPerson.id;
-      //             var billName = titleController.text.trim();
-      //             var price = moneyController.text.trim();
-      //             var strDate = dateController.text.trim();
-      //             var listPeopleId = selectedPeople.map((e) => e.id).toList();
-      //
-      //             DateTime dateTime = DateFormat("dd/MM/yyyy").parse(strDate);
-      //             Timestamp date = Timestamp.fromDate(dateTime);
-      //
-      //             var bill = Bill(id, ownId, billName, int.parse(price), date,
-      //                 listPeopleId);
-      //             var collection = '${month}_$year';
-      //             _spendRepo.addNewBill(bill, collection);
-      //             Navigator.pop(context);
-      //           },
-      //         ),
-      //         ElevatedButton(
-      //           style: ElevatedButton.styleFrom(
-      //             primary: Colors.red,
-      //           ),
-      //           child: const Text("Huỷ"),
-      //           onPressed: () {
-      //             Navigator.pop(context);
-      //           },
-      //         ),
-      //       ],
-      //     );
-      //   }),
-      // );
     },
   );
 }
-
-// showEditDialog(BuildContext context, Bill bill, String collection) {
-//   final nameController = TextEditingController();
-//   final titleController = TextEditingController();
-//   final moneyController = TextEditingController();
-//   final dateController = TextEditingController();
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//
-//       return AlertDialog(
-//         scrollable: true,
-//         title: const Center(child: Text('Sửa chi tiêu')),
-//         content: SizedBox(
-//           width: MediaQuery.of(context).size.width,
-//           child: Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: Form(
-//               child: Column(
-//                 children: [
-//                   TextFormField(
-//                     controller: nameController,
-//                     decoration: const InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       labelText: 'Tên người chi',
-//                     ),
-//                   ),
-//                   const SizedBox(
-//                     height: 10,
-//                   ),
-//                   TextFormField(
-//                     controller: titleController,
-//                     decoration: const InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       labelText: 'Tên khoản chi',
-//                     ),
-//                   ),
-//                   const SizedBox(
-//                     height: 10,
-//                   ),
-//                   TextFormField(
-//                     controller: moneyController,
-//                     decoration: const InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       labelText: 'Số tiền',
-//                     ),
-//                   ),
-//                   const SizedBox(
-//                     height: 10,
-//                   ),
-//                   TextFormField(
-//                     controller: dateController,
-//                     decoration: InputDecoration(
-//                       border: const OutlineInputBorder(),
-//                       labelText: 'Ngày chi',
-//                       suffixIcon: GestureDetector(
-//                           onTap: () {
-//                             selectDate(
-//                               context,
-//                               (date) => dateController.text = date,
-//                             );
-//                           },
-//                           child: const Icon(Icons.calendar_month_outlined)),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//         actions: [
-//           ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               primary: Colors.green,
-//             ),
-//             child: const Text("Xác nhận"),
-//             onPressed: () {
-//               // your code
-//             },
-//           ),
-//           ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               primary: Colors.red,
-//             ),
-//             child: const Text("Huỷ"),
-//             onPressed: () {
-//               Navigator.pop(context);
-//             },
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }
 
 showDeleteDialog(BuildContext context, String billId, String collection) {
   showDialog(
@@ -1373,66 +1014,80 @@ showDeleteDialog(BuildContext context, String billId, String collection) {
   );
 }
 
-class MultiSelect extends StatefulWidget {
-  final List<MyUser> items;
-
-  const MultiSelect({Key? key, required this.items}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _MultiSelectState();
+rowInfo(String title, String content) {
+  return Row(
+    children: [
+      Text(title, style: TextStyle(
+        fontSize: 16,
+      ),),
+      Text(content, style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),),
+    ],
+  );
 }
 
-class _MultiSelectState extends State<MultiSelect> {
-  // this variable holds the selected items
-  final List<MyUser> _selectedItems = [];
-
-// This function is triggered when a checkbox is checked or unchecked
-  void _itemChange(MyUser user, bool isSelected) {
-    setState(() {
-      if (isSelected) {
-        _selectedItems.add(user);
-      } else {
-        _selectedItems.remove(user);
-      }
-    });
-  }
-
-  // this function is called when the Cancel button is pressed
-  void _cancel() {
-    Navigator.pop(context);
-  }
-
-// this function is called when the Submit button is tapped
-  void _submit() {
-    Navigator.pop(context, _selectedItems);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Select Topics'),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: widget.items
-              .map((user) => CheckboxListTile(
-                    value: _selectedItems.contains(user),
-                    title: Text(user.name),
-                    controlAffinity: ListTileControlAffinity.leading,
-                    onChanged: (isChecked) => _itemChange(user, isChecked!),
-                  ))
-              .toList(),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: _cancel,
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: _submit,
-          child: const Text('Submit'),
-        ),
-      ],
-    );
-  }
-}
+// class MultiSelect extends StatefulWidget {
+//   final List<MyUser> items;
+//
+//   const MultiSelect({Key? key, required this.items}) : super(key: key);
+//
+//   @override
+//   State<StatefulWidget> createState() => _MultiSelectState();
+// }
+//
+// class _MultiSelectState extends State<MultiSelect> {
+//   // this variable holds the selected items
+//   final List<MyUser> _selectedItems = [];
+//
+// // This function is triggered when a checkbox is checked or unchecked
+//   void _itemChange(MyUser user, bool isSelected) {
+//     setState(() {
+//       if (isSelected) {
+//         _selectedItems.add(user);
+//       } else {
+//         _selectedItems.remove(user);
+//       }
+//     });
+//   }
+//
+//   // this function is called when the Cancel button is pressed
+//   void _cancel() {
+//     Navigator.pop(context);
+//   }
+//
+// // this function is called when the Submit button is tapped
+//   void _submit() {
+//     Navigator.pop(context, _selectedItems);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return AlertDialog(
+//       title: const Text('Select Topics'),
+//       content: SingleChildScrollView(
+//         child: ListBody(
+//           children: widget.items
+//               .map((user) => CheckboxListTile(
+//                     value: _selectedItems.contains(user),
+//                     title: Text(user.name),
+//                     controlAffinity: ListTileControlAffinity.leading,
+//                     onChanged: (isChecked) => _itemChange(user, isChecked!),
+//                   ))
+//               .toList(),
+//         ),
+//       ),
+//       actions: [
+//         TextButton(
+//           onPressed: _cancel,
+//           child: const Text('Cancel'),
+//         ),
+//         ElevatedButton(
+//           onPressed: _submit,
+//           child: const Text('Submit'),
+//         ),
+//       ],
+//     );
+//   }
+// }
